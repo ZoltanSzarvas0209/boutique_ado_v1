@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-9fh^fm@4ar=kv*!eo!2o$1t3pg=fvm*uuun6sralsu^ok+vjp*
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['8000-zoltanszarv-boutiqueado-040kk9m1qod.ws.codeinstitute-ide.net']
+ALLOWED_HOSTS = ['8000-zoltanszarv-boutiqueado-040kk9m1qod.ws.codeinstitute-ide.net', '127.0.0.1', 'localhost']
 
 CSRF_TRUSTED_ORIGINS = [
     'https://8000-zoltanszarv-boutiqueado-040kk9m1qod.ws.codeinstitute-ide.net',  # Add your domain
