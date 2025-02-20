@@ -9,6 +9,7 @@ from profiles.models import UserProfile
 
 import json
 import time
+import stripe
 
 class StripeWH_Handler:
     """Handle Stripe webhooks"""
@@ -49,11 +50,30 @@ class StripeWH_Handler:
         pid = intent.id
         bag = intent.metadata.get("bag", "{}")  # Default to empty JSON string bag = intent.metadata.bag
         save_info = intent.metadata.get("save_info", "False")  # Default to "False" save_info = intent.metadata.save_info
+#######################################
+        #billing_details = intent.charges.data[0].billing_details
+        billing_details = None
+        grand_total = None
 
-        billing_details = intent.charges.data[0].billing_details
+        if hasattr(intent, "charges") and intent.charges.data:
+            billing_details = intent.charges.data[0].billing_details
+            grand_total = round(intent.charges.data[0].amount / 100, 2)
+        elif hasattr(intent, "latest_charge"):  # If charges don't exist, use latest_charge
+            charge = stripe.Charge.retrieve(intent.latest_charge)
+            billing_details = charge.billing_details
+            grand_total = round(charge.amount / 100, 2)
+
+        #this is where the original code starts after billing_details
         shipping_details = intent.shipping
-        grand_total = round(intent.charges.data[0].amount / 100, 2)
+        ####grand_total = round(intent.charges.data[0].amount / 100, 2)
 
+        if intent.latest_charge:
+            charge = stripe.Charge.retrieve(intent.latest_charge)
+            grand_total = round(charge.amount / 100, 2)
+        else:
+            grand_total = 0
+
+#############################################
         # Clean data in the shipping details
         for field, value in shipping_details.address.items():
             if value == "":
